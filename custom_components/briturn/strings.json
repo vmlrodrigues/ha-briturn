@@ -1,0 +1,20 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add a Briturn bulb",
+        "description": "Enter the bulb's LAN IP address. Pair the bulb to your Wi-Fi with the vendor Briturn/Surplife app before adding it here.",
+        "data": {
+          "host": "IP address",
+          "name": "Name"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach a Briturn/Zengge bulb on TCP :5577 at that IP."
+    },
+    "abort": {
+      "already_configured": "This bulb is already configured."
+    }
+  }
+}
