@@ -1,5 +1,10 @@
 # Briturn — Home Assistant integration
 
+> **This is a maintained fork of [jamesrom/ha-briturn](https://github.com/jamesrom/ha-briturn)
+> by [James Romeril](https://github.com/jamesrom).** It was forked to continue
+> active development, fix outstanding bugs, and extend support beyond the original
+> scope. The original MIT licence is preserved.
+
 Local (LAN-only) Home Assistant integration for **Briturn** Wi-Fi smart bulbs,
 which speak the Zengge 2014 protocol (TCP `:5577`). Also works with other bulbs
 in the Surplife / Zengge family that respond to the same protocol.
@@ -33,7 +38,7 @@ Once paired, find the bulb's IP on your network (router admin panel, `arp -a`, e
 ### Via HACS (custom repository)
 
 1. In HACS → **Integrations** → ⋮ → **Custom repositories**.
-2. Add `https://github.com/jamesrom/ha-briturn` with category **Integration**.
+2. Add `https://github.com/vmlrodrigues/ha-briturn` with category **Integration**.
 3. Install **Briturn**, then restart Home Assistant.
 
 ### Manual
@@ -64,6 +69,8 @@ The query response is 14 bytes:
 `0xF0` in RGB mode and `0x0F` in white mode.
 
 ## Credits
+
+- [jamesrom/ha-briturn](https://github.com/jamesrom/ha-briturn) — original integration by James Romeril, on which this fork is based.
 
 Protocol reverse-engineering predates this repo by years:
 

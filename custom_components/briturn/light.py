@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from datetime import timedelta
 import logging
+import time
 from typing import Any
 
 from homeassistant.components.light import (
@@ -85,6 +86,7 @@ class BriturnLight(LightEntity):
         self._attr_color_temp_kelvin = (MIN_KELVIN + MAX_KELVIN) // 2
         self._attr_available = False
         self._unscaled_rgb: tuple[int, int, int] = (255, 255, 255)
+        self._last_cmd_at: float = 0.0
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry_id)},
             name=name,
@@ -119,10 +121,12 @@ class BriturnLight(LightEntity):
                     )
                     await async_send_cct(self._host, ww, cw)
 
-            await async_send_power(self._host, True)
+            if not self._attr_is_on:
+                await async_send_power(self._host, True)
             self._attr_brightness = brightness
             self._attr_is_on = True
             self._attr_available = True
+            self._last_cmd_at = time.monotonic()
         except (OSError, TimeoutError) as err:
             _LOGGER.warning("briturn %s turn_on failed: %s", self._host, err)
             self._attr_available = False
@@ -150,6 +154,15 @@ class BriturnLight(LightEntity):
 
         self._attr_available = True
         self._attr_is_on = state.is_on
+
+        # This bulb has a built-in fade effect that takes up to ~30 s to complete.
+        # Any poll during the fade returns an intermediate value, not what we commanded.
+        # Only trust the polled brightness once the full SCAN_INTERVAL has elapsed with
+        # no new commands — by then the fade is guaranteed to have settled.
+        age = time.monotonic() - self._last_cmd_at
+        if self._last_cmd_at > 0.0 and age < SCAN_INTERVAL.total_seconds():
+            return
+
         if state.brightness:
             self._attr_brightness = state.brightness
         if state.is_rgb_mode:

@@ -73,7 +73,7 @@ def parse_state(resp: bytes) -> BulbState | None:
     if is_rgb_mode:
         brightness = max(r, g, b)
     else:
-        brightness = max(ww, cw)
+        brightness = min(255, ww + cw)
     if is_on and brightness == 0:
         brightness = 255
     return BulbState(

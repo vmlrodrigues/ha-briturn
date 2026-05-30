@@ -1,12 +1,12 @@
 {
   "domain": "briturn",
   "name": "Briturn",
-  "codeowners": ["@jamesrom"],
+  "codeowners": ["@vmlrodrigues"],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/jamesrom/ha-briturn",
+  "documentation": "https://github.com/vmlrodrigues/ha-briturn",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/jamesrom/ha-briturn/issues",
+  "issue_tracker": "https://github.com/vmlrodrigues/ha-briturn/issues",
   "requirements": [],
-  "version": "0.1.0"
+  "version": "0.1.1"
 }
