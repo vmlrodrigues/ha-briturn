@@ -52,8 +52,12 @@ def _ww_cw_to_kelvin(ww: int, cw: int) -> int:
 
 
 def _scale_rgb(rgb: tuple[int, int, int], brightness: int) -> tuple[int, int, int]:
-    b = max(0, min(255, int(brightness))) / 255.0
-    return tuple(int(round(max(0, min(255, c)) * b)) for c in rgb)  # type: ignore[return-value]
+    scale = max(0, min(255, int(brightness))) / 255.0
+    return (
+        int(round(max(0, min(255, rgb[0])) * scale)),
+        int(round(max(0, min(255, rgb[1])) * scale)),
+        int(round(max(0, min(255, rgb[2])) * scale)),
+    )
 
 
 async def async_setup_entry(
@@ -95,13 +99,13 @@ class BriturnLight(LightEntity):
         )
 
     async def async_turn_on(self, **kwargs: Any) -> None:
-        brightness = int(kwargs.get(ATTR_BRIGHTNESS, self._attr_brightness or 255))
+        brightness = int(kwargs.get(ATTR_BRIGHTNESS, self._attr_brightness if self._attr_brightness is not None else 255))
         rgb = kwargs.get(ATTR_RGB_COLOR)
         kelvin = kwargs.get(ATTR_COLOR_TEMP_KELVIN)
 
         try:
             if rgb is not None:
-                self._unscaled_rgb = tuple(int(c) for c in rgb)  # type: ignore[assignment]
+                self._unscaled_rgb = (int(rgb[0]), int(rgb[1]), int(rgb[2]))
                 self._attr_rgb_color = self._unscaled_rgb
                 self._attr_color_mode = ColorMode.RGB
                 await async_send_rgb(self._host, *_scale_rgb(self._unscaled_rgb, brightness))

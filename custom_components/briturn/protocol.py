@@ -66,6 +66,8 @@ def parse_state(resp: bytes) -> BulbState | None:
     """
     if len(resp) < 14 or resp[0] != 0x81:
         return None
+    if _csum(resp[:13]) != resp[13]:
+        return None
     is_on = resp[2] == 0x23
     r, g, b = resp[6], resp[7], resp[8]
     ww, cw = resp[9], resp[11]
@@ -103,7 +105,7 @@ async def _rw(host: str, port: int, payload: bytes, read_bytes: int, timeout: fl
         writer.close()
         try:
             await writer.wait_closed()
-        except Exception:  # noqa: BLE001
+        except OSError:
             pass
 
 
